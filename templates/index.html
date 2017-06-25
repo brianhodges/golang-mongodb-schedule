@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body style="padding-left: 2cm; padding-right: 2cm;">        
+        <h1>{{ .App.Name }}</h1>
+        <button type="button" onclick="window.location.href = 'new';" class="btn btn-success btn-lg">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New Reservation
+          </button>
+        <br><br>
+        {{ $length := len .Reservations }}
+        {{ if ne $length 0 }}
+            {{range $r := .Reservations}}
+                <p>
+                    <strong>Date:</strong>&nbsp;{{ $r.Date }}<br>
+                    <strong>Time:</strong>&nbsp;{{ $r.Start_Time }}&nbsp;-&nbsp;{{ $r.End_Time }}<br>
+                    <strong>Location:</strong>&nbsp;{{ $r.Location.Name }}<br>
+                </p>
+            {{ end }}
+        {{ else }}
+            <p>
+                <strong>No Results Returned</strong>
+            </p>
+        {{ end }}
+        <br><br>
+    </body>
+    <footer>
+        <p>v{{ .App.Version }}</p>
+    </footer>
+</html>

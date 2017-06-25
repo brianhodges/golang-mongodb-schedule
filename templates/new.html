@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.js"></script>
+    </head>
+    <body style="padding-left: 2cm; padding-right: 2cm;">
+        <div style="width: 690px">
+        {{ $length := len .Errors }}
+        {{ if ne $length 0 }}
+            {{range $e := .Errors}}
+                <strong style="color: red;">{{ $e }}</strong><br>
+            {{ end }}
+        {{ end }}
+            
+            <h1>New Reservation</h1>
+            <label>Date:</label><br/>
+            <form action="/send" method="post">
+                <select class="selectpicker" data-style="btn-primary" name="month">
+                    <option selected value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+                &nbsp;
+                <select class="selectpicker" data-style="btn-primary" name="day">
+                    <option selected>1</option>      
+                    <option>2</option>      
+                    <option>3</option>      
+                    <option>4</option>      
+                    <option>5</option>      
+                    <option>6</option>      
+                    <option>7</option>      
+                    <option>8</option>      
+                    <option>9</option>      
+                    <option>10</option>      
+                    <option>11</option>      
+                    <option>12</option>      
+                    <option>13</option>      
+                    <option>14</option>      
+                    <option>15</option>      
+                    <option>16</option>      
+                    <option>17</option>      
+                    <option>18</option>      
+                    <option>19</option>      
+                    <option>20</option>      
+                    <option>21</option>      
+                    <option>22</option>      
+                    <option>23</option>      
+                    <option>24</option>      
+                    <option>25</option>      
+                    <option>26</option>      
+                    <option>27</option>      
+                    <option>28</option>      
+                    <option>29</option>      
+                    <option>30</option>      
+                    <option>31</option>      
+                </select>
+                &nbsp;
+                <select class="selectpicker" data-style="btn-primary" name="year">
+                    <option selected>2017</option>      
+                    <option>2018</option>      
+                    <option>2019</option>
+                    <option>2020</option> 
+                </select>
+                <br/><br/>
+                
+                {{ $l_length := len .Locations }}
+                {{ if ne $l_length 0 }}
+                    <label>Location:</label><br/>
+                    <select class="selectpicker" data-style="btn-primary" name="location">
+                    {{range $l := .Locations}}
+                        <option>{{ $l.Name }}</option>
+                    {{ end }}
+                    </select>
+                    <br/><br/>
+                {{ end }}
+                
+                <div class="container">
+                    <div class="row">
+                        <label>Start Time:</label>
+                        <div style="width: 200px;" class="input-group bootstrap-timepicker timepicker">
+                            <input id="start_timepicker" name="start" type="text" class="form-control input-small">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                        <br/>
+                        <label>End Time:</label>
+                        <div style="width: 200px" class="input-group bootstrap-timepicker timepicker">
+                            <input id="end_timepicker" name="end" type="text" class="form-control input-small">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <button style="float: right; width: 150px;" class="btn btn-success" type="submit">SUBMIT</button>
+                <button style="float: right; width: 150px;" class="btn btn-secondary" type="button" onclick="window.location.href = '/';">Cancel</button>
+            </form>
+        </div>
+        <script type="text/javascript">
+            $('.selectpicker').selectpicker({ dropupAuto: false });
+            $('#start_timepicker').timepicker();
+            $('#end_timepicker').timepicker();
+        </script>
+    </body>
+</html>
