@@ -1,32 +1,34 @@
 package util
 
 import (
+	"log"
 	"strconv"
 	"strings"
 )
 
+//Application defines application info. Used in templates
 type Application struct {
 	Name    string
 	Version string
 }
 
-//easily check/throw error
-func check(err error) {
+//Check logs error
+func Check(err error) {
 	if err != nil {
-		panic(err)
+		log.Println("Error: ", err)
 	}
 }
 
-//convert string Time to integer
+//TimeToInteger converts string Time to integer
 func TimeToInteger(input string) int {
 	s := strings.Split(input, ":")
 	hour, tail := s[0], s[1]
 	t := strings.Split(tail, " ")
 	minutes, ampm := t[0], t[1]
 	hr, err := strconv.Atoi(hour)
-	check(err)
+	Check(err)
 	min, err := strconv.Atoi(minutes)
-	check(err)
+	Check(err)
 	if ampm == "AM" && hr == 12 {
 		hr = 0
 	} else {

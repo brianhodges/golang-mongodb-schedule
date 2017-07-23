@@ -15,7 +15,7 @@
             {{range $r := .Reservations}}
                 <p>
                     <strong>Date:</strong>&nbsp;{{ $r.Date }}<br>
-                    <strong>Time:</strong>&nbsp;{{ $r.Start_Time }}&nbsp;-&nbsp;{{ $r.End_Time }}<br>
+                    <strong>Time:</strong>&nbsp;{{ $r.StartTime }}&nbsp;-&nbsp;{{ $r.EndTime }}<br>
                     <strong>Location:</strong>&nbsp;{{ $r.Location.Name }}<br>
                 </p>
             {{ end }}

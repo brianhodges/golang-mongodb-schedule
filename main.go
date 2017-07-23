@@ -17,28 +17,22 @@ import (
 const COLLECTION = "reservations"
 const L_COLLECTION = "locations"
 
-// Used for HTML Templates (ex. .App.Version = app.Application.Version)
-type index_vars struct {
+//IndexVars used for HTML Template Index View (ex. .App.Version = app.Application.Version)
+type IndexVars struct {
 	Reservations []reservation.Reservation
 	App          util.Application
 }
 
-type new_vars struct {
+//IndexVars used for HTML Template New View
+type NewVars struct {
 	Locations []location.Location
 	Errors    map[string]string
-}
-
-//easily check/throw error
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
 
 //create locations if they dont exist
 func initializeLocations() {
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
-	check(err)
+	util.Check(err)
 	defer session.Close()
 	c := session.DB(os.Getenv("MONGODB_DB")).C(L_COLLECTION)
 	locations := []location.Location{
@@ -54,10 +48,10 @@ func initializeLocations() {
 	}
 	for _, l := range locations {
 		cnt, err := c.Find(bson.M{"name": l.Name}).Count()
-		check(err)
+		util.Check(err)
 		if cnt == 0 {
 			err = c.Insert(l)
-			check(err)
+			util.Check(err)
 		}
 	}
 }
@@ -65,12 +59,12 @@ func initializeLocations() {
 //load locations from MongoDB into array
 func getLocations() []location.Location {
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
-	check(err)
+	util.Check(err)
 	defer session.Close()
 	c := session.DB(os.Getenv("MONGODB_DB")).C(L_COLLECTION)
 	var results []location.Location
 	err = c.Find(nil).All(&results)
-	check(err)
+	util.Check(err)
 	return results
 }
 
@@ -80,13 +74,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 	app := util.Application{Name: "golang-mongodb-schedule", Version: "1.0.1"}
 
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
-	check(err)
+	util.Check(err)
 	defer session.Close()
 	c := session.DB(os.Getenv("MONGODB_DB")).C(COLLECTION)
 	var results []reservation.Reservation
 	err = c.Find(nil).Sort("year", "month", "day", "start").All(&results)
-	check(err)
-	data := index_vars{Reservations: results, App: app}
+	util.Check(err)
+	data := IndexVars{Reservations: results, App: app}
 
 	if url == "" {
 		render(w, "templates/index.html", data)
@@ -96,16 +90,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 //new view handler
 func new(w http.ResponseWriter, r *http.Request) {
 	var results []location.Location = getLocations()
-	data := new_vars{Errors: nil, Locations: results}
+	data := NewVars{Errors: nil, Locations: results}
 	render(w, "templates/new.html", data)
 }
 
 //add POST handler
 func send(w http.ResponseWriter, r *http.Request) {
 	day, err := strconv.Atoi(r.PostFormValue("day"))
-	check(err)
+	util.Check(err)
 	year, err := strconv.Atoi(r.PostFormValue("year"))
-	check(err)
+	util.Check(err)
 	reservation := &reservation.Reservation{
 		Month:    r.PostFormValue("month"),
 		Day:      day,
@@ -117,15 +111,15 @@ func send(w http.ResponseWriter, r *http.Request) {
 
 	if reservation.Validate() == false {
 		results := getLocations()
-		data := new_vars{Errors: reservation.Errors, Locations: results}
+		data := NewVars{Errors: reservation.Errors, Locations: results}
 		render(w, "templates/new.html", data)
 	} else {
 		session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
-		check(err)
+		util.Check(err)
 		defer session.Close()
 		c := session.DB(os.Getenv("MONGODB_DB")).C(COLLECTION)
 		err = c.Insert(reservation)
-		check(err)
+		util.Check(err)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

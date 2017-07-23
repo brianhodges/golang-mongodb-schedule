@@ -3,21 +3,17 @@ package reservation
 import (
 	"fmt"
 	"golang-mongodb-schedule/pkg/location"
+	"golang-mongodb-schedule/pkg/util"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"os"
 	"strconv"
 )
 
+//COLLECTION is the MongoDB Collection name
 const COLLECTION = "reservations"
 
-//easily check/throw error
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
+//Reservation defines that created reservation object/struct
 type Reservation struct {
 	Id       bson.ObjectId `json:"id" bson:"_id,omitempty"`
 	Month    string
@@ -29,13 +25,13 @@ type Reservation struct {
 	Errors   map[string]string `bson:"-"`
 }
 
-//concatenate Reservation Date
+//Date concatenates Reservation Date fields
 func (p Reservation) Date() string {
 	return p.Month + " " + strconv.Itoa(p.Day) + ", " + strconv.Itoa(p.Year)
 }
 
-//convert Reservation (int) start to Time
-func (p Reservation) Start_Time() string {
+//StartTime converts Reservation (int) start to Time
+func (p Reservation) StartTime() string {
 	hr := p.Start / 60
 	min := p.Start % 60
 	var ampm string
@@ -51,8 +47,8 @@ func (p Reservation) Start_Time() string {
 	return fmt.Sprintf("%02d:%02d %s", hr, min, ampm)
 }
 
-//convert Reservation (int) end to Time
-func (p Reservation) End_Time() string {
+//EndTime converts Reservation (int) end to Time
+func (p Reservation) EndTime() string {
 	hr := p.End / 60
 	min := p.End % 60
 	var ampm string
@@ -68,7 +64,7 @@ func (p Reservation) End_Time() string {
 	return fmt.Sprintf("%02d:%02d %s", hr, min, ampm)
 }
 
-//validate Reservation on create - booked reservations, start time < end time
+//Validate Reservation on create - booked reservations, start time < end time
 func (r *Reservation) Validate() bool {
 	r.Errors = make(map[string]string)
 
@@ -77,12 +73,12 @@ func (r *Reservation) Validate() bool {
 	}
 
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
-	check(err)
+	util.Check(err)
 	defer session.Close()
 	c := session.DB(os.Getenv("MONGODB_DB")).C(COLLECTION)
 	var results []Reservation
 	err = c.Find(bson.M{"month": r.Month, "day": r.Day, "year": r.Year, "location": r.Location}).All(&results)
-
+	util.Check(err)
 	for _, reservation := range results {
 		if r.End <= reservation.Start {
 			continue
@@ -90,7 +86,7 @@ func (r *Reservation) Validate() bool {
 		if r.Start >= reservation.End {
 			continue
 		}
-		s := fmt.Sprintf("Reservation already booked for %s on %s from %s - %s", reservation.Location.Name, reservation.Date(), reservation.Start_Time(), reservation.End_Time())
+		s := fmt.Sprintf("Reservation already booked for %s on %s from %s - %s", reservation.Location.Name, reservation.Date(), reservation.StartTime(), reservation.EndTime())
 		id := fmt.Sprintf("%d", reservation.Id)
 		r.Errors[id] = s
 	}
