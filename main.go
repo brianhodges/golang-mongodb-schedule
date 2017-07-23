@@ -14,7 +14,10 @@ import (
 	"strconv"
 )
 
+//COLLECTION is the MongoDB Collection name
 const COLLECTION = "reservations"
+
+//L_COLLECTION is the MongoDB Collection name for Locations
 const L_COLLECTION = "locations"
 
 //IndexVars used for HTML Template Index View (ex. .App.Version = app.Application.Version)
@@ -23,7 +26,7 @@ type IndexVars struct {
 	App          util.Application
 }
 
-//IndexVars used for HTML Template New View
+//NewVars used for HTML Template New View
 type NewVars struct {
 	Locations []location.Location
 	Errors    map[string]string
@@ -71,7 +74,7 @@ func getLocations() []location.Location {
 //index view handler
 func index(w http.ResponseWriter, r *http.Request) {
 	url := r.FormValue("url")
-	app := util.Application{Name: "golang-mongodb-schedule", Version: "1.0.1"}
+	app := util.Application{Name: "golang-mongodb-schedule", Version: "1.1.0"}
 
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
 	util.Check(err)

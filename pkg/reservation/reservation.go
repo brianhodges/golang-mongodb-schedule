@@ -26,14 +26,14 @@ type Reservation struct {
 }
 
 //Date concatenates Reservation Date fields
-func (p Reservation) Date() string {
-	return p.Month + " " + strconv.Itoa(p.Day) + ", " + strconv.Itoa(p.Year)
+func (r Reservation) Date() string {
+	return r.Month + " " + strconv.Itoa(r.Day) + ", " + strconv.Itoa(r.Year)
 }
 
 //StartTime converts Reservation (int) start to Time
-func (p Reservation) StartTime() string {
-	hr := p.Start / 60
-	min := p.Start % 60
+func (r Reservation) StartTime() string {
+	hr := r.Start / 60
+	min := r.Start % 60
 	var ampm string
 	if ampm = "AM"; hr >= 12 {
 		ampm = "PM"
@@ -48,9 +48,9 @@ func (p Reservation) StartTime() string {
 }
 
 //EndTime converts Reservation (int) end to Time
-func (p Reservation) EndTime() string {
-	hr := p.End / 60
-	min := p.End % 60
+func (r Reservation) EndTime() string {
+	hr := r.End / 60
+	min := r.End % 60
 	var ampm string
 	if ampm = "AM"; hr >= 12 {
 		ampm = "PM"
