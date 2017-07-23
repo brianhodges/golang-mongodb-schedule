@@ -74,7 +74,7 @@ func getLocations() []location.Location {
 //index view handler
 func index(w http.ResponseWriter, r *http.Request) {
 	url := r.FormValue("url")
-	app := util.Application{Name: "golang-mongodb-schedule", Version: "1.1.0"}
+	app := util.Application{Name: "golang-mongodb-schedule", Version: "1.1.1"}
 
 	session, err := mgo.Dial(os.Getenv("MONGODB_URI"))
 	util.Check(err)

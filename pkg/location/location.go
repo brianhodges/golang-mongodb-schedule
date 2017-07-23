@@ -1,6 +1,7 @@
 package location
 
 import (
+	"golang-mongodb-schedule/pkg/util"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"os"
